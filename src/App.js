@@ -2,25 +2,28 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 
+const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
+
 class App extends Component {
   state = {
     posts: []
   };
 
+  // whenever using the await keyword within a function,
+  // remember to decorate the function with async
   async componentDidMount() {
-    // a promise is an object that holds the result of an asynchronous operation,
-    // an operation that will complete in the future
-    const promise = axios.get("https://jsonplaceholder.typicode.com/posts");
-    console.log(promise);
-
-    // whenever using the await keyword within a function,
-    // remember to decorate the function with async
-    const response = await promise;
-    console.log(response);
+    const { data: posts } = await axios.get(apiEndpoint);
+    this.setState({ posts });
   }
 
-  handleAdd = () => {
+  handleAdd = async () => {
     console.log("Add");
+    const obj = { title: "a", body: "b" };
+    const { data: post } = await axios.post(apiEndpoint, obj);
+    console.log(post);
+
+    const posts = [post, ...this.state.posts];
+    this.setState({ posts });
   };
 
   handleUpdate = post => {
@@ -34,41 +37,43 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <button className="btn btn-primary" onClick={this.handleAdd}>
-          Add
-        </button>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Update</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.posts.map(post => (
-              <tr key={post.id}>
-                <td>{post.title}</td>
-                <td>
-                  <button
-                    className="btn btn-info btn-sm"
-                    onClick={() => this.handleUpdate(post)}
-                  >
-                    Update
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => this.handleDelete(post)}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="container">
+          <button className="btn btn-primary mb-4" onClick={this.handleAdd}>
+            Add
+          </button>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Update</th>
+                <th>Delete</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {this.state.posts.map(post => (
+                <tr key={post.id}>
+                  <td>{post.title}</td>
+                  <td>
+                    <button
+                      className="btn btn-info btn-sm"
+                      onClick={() => this.handleUpdate(post)}
+                    >
+                      Update
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => this.handleDelete(post)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </React.Fragment>
     );
   }
