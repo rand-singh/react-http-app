@@ -1,10 +1,23 @@
 import React, { Component } from "react";
+import axios from "axios";
 import "./App.css";
 
 class App extends Component {
   state = {
     posts: []
   };
+
+  async componentDidMount() {
+    // a promise is an object that holds the result of an asynchronous operation,
+    // an operation that will complete in the future
+    const promise = axios.get("https://jsonplaceholder.typicode.com/posts");
+    console.log(promise);
+
+    // whenever using the await keyword within a function,
+    // remember to decorate the function with async
+    const response = await promise;
+    console.log(response);
+  }
 
   handleAdd = () => {
     console.log("Add");
