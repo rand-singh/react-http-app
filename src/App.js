@@ -2,6 +2,22 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 
+// whenever we have a response with an error this function will be
+// called first and then the control will pass to the catch block
+axios.interceptors.response.use(null, error => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+
+  if (!expectedError) {
+    console.log("log the error", error);
+    alert("unexpected error occured");
+  }
+
+  return Promise.reject(error);
+});
+
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
@@ -46,10 +62,6 @@ class App extends Component {
       if (ex.response && ex.response.status === 404)
         // this is an expected error
         alert("this post has already been deleted.");
-      else {
-        console.log("log the error", ex);
-        alert("unexpected error occured");
-      }
 
       this.setState({ posts: originalPosts });
     }
