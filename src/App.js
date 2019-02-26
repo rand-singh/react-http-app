@@ -35,10 +35,18 @@ class App extends Component {
   };
 
   handleDelete = async post => {
-    await axios.delete(apiEndpoint + "/" + post.id);
+    const originalPosts = this.state.posts;
 
     const posts = this.state.posts.filter(p => p.id !== post.id);
     this.setState({ posts });
+
+    try {
+      await axios.delete(apiEndpoint + "/" + post.id);
+      throw new Error("");
+    } catch (ex) {
+      alert("Something wen wrong when deleting the post: " + post.id);
+      this.setState({ posts: originalPosts });
+    }
   };
 
   render() {
@@ -48,9 +56,10 @@ class App extends Component {
           <button className="btn btn-primary mb-4" onClick={this.handleAdd}>
             Add
           </button>
-          <table className="table">
+          <table className="table table-striped">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Title</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -59,6 +68,7 @@ class App extends Component {
             <tbody>
               {this.state.posts.map(post => (
                 <tr key={post.id}>
+                  <td>{post.id}</td>
                   <td>{post.title}</td>
                   <td>
                     <button
