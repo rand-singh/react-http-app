@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // whenever we have a response with an error this function will be
 // called first and then the control will pass to the catch block
@@ -10,7 +11,7 @@ axios.interceptors.response.use(null, error => {
 
   if (!expectedError) {
     console.log("log the error", error);
-    alert("unexpected error occured");
+    toast("unexpected error occured");
   }
 
   return Promise.reject(error);
