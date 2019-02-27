@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import http from "./services/httpService";
+import config from "./config.json";
 import "./App.css";
-
-const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
   state = {
@@ -12,13 +11,13 @@ class App extends Component {
   // whenever using the await keyword within a function,
   // remember to decorate the function with async
   async componentDidMount() {
-    const { data: posts } = await http.get(apiEndpoint);
+    const { data: posts } = await http.get(config.apiEndpoint);
     this.setState({ posts });
   }
 
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await http.post(apiEndpoint, obj);
+    const { data: post } = await http.post(config.apiEndpoint, obj);
 
     const posts = [post, ...this.state.posts];
     this.setState({ posts });
@@ -26,7 +25,7 @@ class App extends Component {
 
   handleUpdate = async post => {
     post.title = "updated";
-    await http.put(apiEndpoint + "/" + post.id, post);
+    await http.put(config.apiEndpoint + "/" + post.id, post);
 
     const posts = [...this.state.posts];
     const index = posts.indexOf(post);
@@ -41,7 +40,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await http.delete(apiEndpoint + "/" + post.id);
+      await http.delete(config.apiEndpoint + "/" + post.id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         // this is an expected error
