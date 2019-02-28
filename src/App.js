@@ -42,7 +42,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await http.delete("dfdf" + config.apiEndpoint + "/" + post.id);
+      await http.delete(config.apiEndpoint + "/" + post.id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         // this is an expected error
